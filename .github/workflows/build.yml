@@ -39,7 +39,7 @@ jobs:
     # 4. 打包EXE
     - name: Build with PyInstaller
       run: |
-        pyinstaller -i favicon.ico --onefile --name "MyApp" --hidden-import API_1 --hidden-import API_2 main.py 
+        pyinstaller -i favicon.ico --onefile --name "MyApp" main.py 
         echo "✅ Build completed!"
         dir "dist\"
     

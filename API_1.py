@@ -194,7 +194,7 @@ def search_music(key, page, interface):
             return False
         music_id_list.append(download_result["data"]["total"])
         for i, song in enumerate(download_result["data"]["songs"]):
-            print(f"{i+1}. {song["name"]} - {song["artists"]} - {song["album"]}")
+            print(f"{i+1}. {song['name']} - {song['artists']} - {song['album']}")
             music_id_list.append(song["id"]) 
         return music_id_list
         

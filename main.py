@@ -139,6 +139,7 @@ else:
         json.dump(settings, f, indent=4)
         
 while True:
+    print("-" * 50)
     if os.path.exists("settings.json"):
         with open('settings.json', 'r') as f:
             settings = json.load(f)
@@ -178,71 +179,80 @@ while True:
                    pass
                else:
                    settings["folder"] = path
+            with open('settings.json', 'w') as f:
+                json.dump(settings, f, indent=4)
     elif mode == "1":
-        music_id = input("请输入歌曲ID或URL：")
-        if "=" in music_id:
-            music_id = music_id.split("=")[1]
-        
-        if settings["interface"] != 3:
-            API_1_download(music_id)
+        while True:
+            music_id = input("请输入歌曲ID或URL，输入0退出该模式：")
+            if music_id == "0":
+                break
+            if "=" in music_id:
+                music_id = music_id.split("=")[1]
             
-        else:
-            API_2_download(music_id)
+            if settings["interface"] != 3:
+                API_1_download(music_id)
+                
+            else:
+                API_2_download(music_id)
             
     elif mode == "2":
-        music_id_list = input("请输入歌曲ID，以空格分割：")
-        music_id_list = music_id_list.split(" ")
-        
-        if settings["interface"] != 3:
-            if music_id_list:
-                for music_id in music_id_list:
-                    API_1_download(music_id)
+        while True:
+            music_id_list = input("请输入歌曲ID，以空格分割，输入0退出该模式：")
+            if music_id_list == "0":
+                break
+            music_id_list = music_id_list.split(" ")
             
-        else:
-            if music_id_list:
-                for music_id in music_id_list:
-                    API_2_download(music_id)
+            if settings["interface"] != 3:
+                if music_id_list:
+                    for music_id in music_id_list:
+                        API_1_download(music_id)
+                
+            else:
+                if music_id_list:
+                    for music_id in music_id_list:
+                        API_2_download(music_id)
                     
     elif mode == "3":
-        playlist_id = input("请输入歌单ID或链接：")
-        if "=" in playlist_id:
-            playlist_id = playlist_id.split("=")[1]
-        
-        if settings["interface"] != 3:
-            music_id_list = API_1.get_playlist_info(playlist_id,settings["interface"])
-            if music_id_list != False:
-                for music_id in music_id_list:
-                    API_1_download(music_id)
+        while True:
+            playlist_id = input("请输入歌单ID或链接，输入0退出该模式：")
+            if playlist_id == "0":
+                break
+            if "=" in playlist_id:
+                playlist_id = playlist_id.split("=")[1]
             
-        else:
-            music_id_list = API_2.get_playlist_info(playlist_id)
-            if music_id_list != False:
-                for music_id in music_id_list:
-                    API_2_download(music_id)
+            if settings["interface"] != 3:
+                music_id_list = API_1.get_playlist_info(playlist_id,settings["interface"])
+                if music_id_list != False:
+                    for music_id in music_id_list:
+                        API_1_download(music_id)
+                
+            else:
+                music_id_list = API_2.get_playlist_info(playlist_id)
+                if music_id_list != False:
+                    for music_id in music_id_list:
+                        API_2_download(music_id)
+                        
     elif mode == "4":
-        album_id = input("请输入专辑ID或链接：")
-        if "=" in album_id:
-            album_id = album_id.split("=")[1]
-        
-        if settings["interface"] != 3:
-            music_id_list = API_1.get_album_info(album_id,settings["interface"])
-            if music_id_list != False:
-                for music_id in music_id_list:
-                    API_1_download(music_id)
+        while True:
+            album_id = input("请输入专辑ID或链接，输入0退出该模式：")
+            if album_id == "0":
+                break
+            if "=" in album_id:
+                album_id = album_id.split("=")[1]
             
-        else:
-            music_id_list = API_2.get_album_info(album_id)
-            if music_id_list != False:
-                for music_id in music_id_list:
-                    API_2_download(music_id)
-    elif mode == "5" and settings["interface"] != 3:
-        key = input("请输入搜索关键词：")
-        
-        page = input("请输入页码：")
-        music_id_list = API_1.search_music(key,page,settings["interface"])
-        music_id = int(input("请输入歌曲序号："))
-        music_id = music_id_list[music_id]
-        API_1_download(music_id)
-            
+            if settings["interface"] != 3:
+                music_id_list = API_1.get_album_info(album_id,settings["interface"])
+                if music_id_list != False:
+                    for music_id in music_id_list:
+                        API_1_download(music_id)
+                
+            else:
+                music_id_list = API_2.get_album_info(album_id)
+                if music_id_list != False:
+                    for music_id in music_id_list:
+                        API_2_download(music_id)
+    elif mode == "5":
+        print("未完成")
+                    
     else:
         print("无效模式")
