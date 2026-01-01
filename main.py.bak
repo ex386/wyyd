@@ -157,7 +157,7 @@ while True:
             if edit == "0":
                 break
             elif edit == "1":
-                interface = input(f"当前接口为{settings['interface']}\n请输入需要修改的接口：\n0.取消修改\n1.接口1\n2.接口2\n3.接口3（不支持搜索）\n")
+                interface = input(f"当前接口为{settings["interface"]}\n请输入需要修改的接口：\n0.取消修改\n1.接口1\n2.接口2\n3.接口3（不支持搜索）\n")
                 if interface == "0":
                     pass
                 elif int(interface) >= 1 <= 3:
@@ -165,7 +165,7 @@ while True:
                 else:
                     print("无效值")
             elif edit == "2":
-                level_name = input(f"当前音质为{level_name[settings['level_name']]}，请输入要更改成的音质序号：\n1.standard：标准音质\n2.exhigh：极高音质\n3.lossless：无损音质\n4.hires：Hi-Res音质\n5.jyeffect：高清环绕声\n6.sky：沉浸环绕声\n7.jymaster：超清母带\n")
+                level_name = input(f"当前音质为{level_name[settings["level_name"]]}，请输入要更改成的音质序号：\n1.standard：标准音质\n2.exhigh：极高音质\n3.lossless：无损音质\n4.hires：Hi-Res音质\n5.jyeffect：高清环绕声\n6.sky：沉浸环绕声\n7.jymaster：超清母带\n")
                 if level_name == "0":
                     pass
                 elif int(level_name) >= 1 <= 7:
