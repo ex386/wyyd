@@ -184,10 +184,23 @@ def search_music(key, page, interface):
         "page": page,
     }
     
+    search_next_music_payload = {
+        "keywords": key,
+        "page": page + 1,
+    }
+    
     try:
         response = requests.post(f"https://wyapi-{interface}.toubiec.cn/api/music/search", data=search_music_payload, verify=False)
         download_result = response.json()
         
+        response_next = requests.post(f"https://wyapi-{interface}.toubiec.cn/api/music/search", data=search_next_music_payload, verify=False)
+        download_result_next = response_next.json()
+        
+        if download_result_next["data"]["total"] == 0:
+            music_id_list.append(False)
+        else:
+            music_id_list.append(True)
+            
         if download_result.get("code") != 200 or not download_result.get("data"):
             print(f"❌ key: {key} 搜索失败")
             print(download_result["msg"])

@@ -16,19 +16,23 @@ settings = {
 }
 def API_1_download(music_id):
     music_url = API_1.get_music_url(music_id,level_name[settings["level_name"]-1],settings["interface"])
-    if "mp3" in music_url:
-        file_type ="mp3"
-    elif "flac" in music_url:
-        file_type = "flac"
+    if music_url != False:
+        if "mp3" in music_url:
+            file_type ="mp3"
+        elif "flac" in music_url:
+            file_type = "flac"
         
-    music_info = API_1.get_music_info(music_id,settings["interface"])
-    safe_name = re.sub(r'[\\/*?:"<>|]', "", music_info["name"])
-    filename = f"{safe_name}_{music_id}.{file_type}"
-    filepath = download(music_url,filename,settings["folder"])
-    pngname = f"{safe_name}_{music_id}.png"
-    pngpath = download(music_info["picimg"],pngname,settings["folder"])
-    write_metadata(file_type,filepath,pngpath,music_info)
-    API_1.get_music_lrc(music_id,music_info["name"],settings["interface"],settings["folder"])
+        music_info = API_1.get_music_info(music_id,settings["interface"])
+        safe_name = re.sub(r'[\\/*?:"<>|]', "", music_info["name"])
+        filename = f"{safe_name}_{music_id}.{file_type}"
+        filepath = download(music_url,filename,settings["folder"])
+        pngname = f"{safe_name}_{music_id}.png"
+        pngpath = download(music_info["picimg"],pngname,settings["folder"])
+        write_metadata(file_type,filepath,pngpath,music_info)
+        API_1.get_music_lrc(music_id,music_info["name"],settings["interface"],settings["folder"])
+    
+    else:
+        return False
     
 def API_2_download(music_id):
     music_info = API_2.get_music(music_id,level_name[settings["level_name"]-1],settings["folder"])
@@ -252,7 +256,36 @@ while True:
                     for music_id in music_id_list:
                         API_2_download(music_id)
     elif mode == "5":
-        print("未完成")
-                    
+        key = input("请输入关键词：")
+        page = 1
+        music_id_list = API_1.search_music(key,page,settings["interface"])
+        while True:
+            print(f"当前页码：{page}")
+            user_input = input("请输入要下载的ID，以及空格分割：").strip()
+        
+            # 处理特殊命令
+            if user_input.lower() == "r":  # 下一页
+                page += 1
+                music_id_list = API_1.search_music(key, page, settings["interface"])
+                continue
+            elif user_input.lower() == "l":  # 上一页
+                if page > 1:
+                    page -= 1
+                    music_id_list = API_1.search_music(key, page, settings["interface"])
+                continue
+            elif user_input == "0":  # 退出
+                break
+            elif not user_input:  # 空输入
+                continue
+            
+            # 处理下载多个ID
+            id_list = user_input.split(" ")
+            for music_id in id_list:
+                if music_id.strip():  # 确保不是空字符串
+                    API_1_download(music_id.strip())
+                        
+    elif mode == "exit":
+        break
+        
     else:
         print("无效模式")
