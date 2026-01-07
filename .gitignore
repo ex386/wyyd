@@ -1,3 +1,5 @@
 __pycache__/
 settings.json
 *.bak
+Music
+music_downloader.log
