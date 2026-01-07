@@ -127,12 +127,12 @@ DEFAULT_SETTINGS = {
 VALID_SETTINGS = {
     "interface": {
         "type": int,
-        "range": [1, 2, 3],
+        "range": [1, 2, 3],  # 离散值列表
         "description": "接口选择: 1=接口1, 2=接口2, 3=接口3(不支持搜索)"
     },
     "level_name": {
         "type": int,
-        "range": [1, 2, 3, 4, 5, 6, 7],
+        "range": [1, 2, 3, 4, 5, 6, 7],  # 离散值列表
         "description": "音质等级: 1=standard, 2=exhigh, 3=lossless, 4=hires, 5=jyeffect, 6=sky, 7=jymaster"
     },
     "folder": {
@@ -141,12 +141,12 @@ VALID_SETTINGS = {
     },
     "max_retries": {
         "type": int,
-        "range": [1, 10],
+        "range": [1, 10],  # 连续值范围 [最小值, 最大值]
         "description": "最大重试次数"
     },
     "timeout": {
         "type": int,
-        "range": [10, 300],
+        "range": [10, 300],  # 连续值范围 [最小值, 最大值]
         "description": "请求超时时间(秒)"
     },
     "verify_ssl": {
@@ -184,11 +184,20 @@ def validate_settings(settings: Dict[str, Any]) -> Dict[str, Any]:
                 log("WARNING", f"设置 {key} 的值 '{value}' 无效，使用默认值 {DEFAULT_SETTINGS[key]}: {e}")
                 validated_value = DEFAULT_SETTINGS[key]
             
-            # 范围检查
+            # 范围检查（修复这里！）
             if "range" in validator:
-                if validated_value not in validator["range"]:
-                    log("WARNING", f"设置 {key} 的值 {validated_value} 超出范围 {validator['range']}，使用默认值 {DEFAULT_SETTINGS[key]}")
-                    validated_value = DEFAULT_SETTINGS[key]
+                # 获取最小值和最大值
+                range_list = validator["range"]
+                if len(range_list) == 2:
+                    min_val, max_val = range_list
+                    if not (min_val <= validated_value <= max_val):
+                        log("WARNING", f"设置 {key} 的值 {validated_value} 超出范围 [{min_val}, {max_val}]，使用默认值 {DEFAULT_SETTINGS[key]}")
+                        validated_value = DEFAULT_SETTINGS[key]
+                else:
+                    # 如果是离散值列表（如interface的[1, 2, 3]）
+                    if validated_value not in range_list:
+                        log("WARNING", f"设置 {key} 的值 {validated_value} 不在允许值 {range_list} 中，使用默认值 {DEFAULT_SETTINGS[key]}")
+                        validated_value = DEFAULT_SETTINGS[key]
             
             validated[key] = validated_value
         else:
